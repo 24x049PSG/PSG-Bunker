@@ -59,13 +59,6 @@ Data is structured and served to the frontend via JSON.
 
 The frontend displays the data in a clean, responsive format with conditional formatting based on attendance thresholds.
 
-About the Developer
-Name: Manu Sanjay
-Roll Number: 24I434
-Department: B.Tech Information Technology
-Institution: PSG College of Technology
-Academic Year: 2025
-
 This project was created to address a real student need by improving access to academic data and providing actionable insights in a user-friendly format. It combines backend automation, frontend design, and practical problem-solving.
 
 Future Enhancements
