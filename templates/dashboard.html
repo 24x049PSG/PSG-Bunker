@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - PSG Bunker</title>
+    <title>PSG Bunker - Enhanced Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -12,13 +12,40 @@
             --primary-light: #1e6cc7;
             --secondary: #4a9eff;
             --text-light: #e0e0e0;
+            --text-dark: #333;
             --text-muted: #a0aec0;
             --card-bg: #152642;
+            --card-bg-light: #ffffff;
             --card-border: #2d4a7a;
+            --card-border-light: #e2e8f0;
+            --background-dark: #081428;
+            --background-light: #f8fafc;
             --success: #4ade80;
             --warning: #fbbf24;
             --danger: #f87171;
             --hover-effect: brightness(1.2);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] {
+            --bg-color: var(--background-light);
+            --text-color: var(--text-dark);
+            --card-bg-color: var(--card-bg-light);
+            --card-border-color: var(--card-border-light);
+            --text-muted-color: #718096;
+            --shadow-color: var(--shadow-light);
+            --floating-icon-color: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: var(--background-dark);
+            --text-color: var(--text-light);
+            --card-bg-color: var(--card-bg);
+            --card-border-color: var(--card-border);
+            --text-muted-color: var(--text-muted);
+            --shadow-color: var(--shadow);
+            --floating-icon-color: rgba(255, 255, 255, 0.08);
         }
         
         * {
@@ -26,17 +53,16 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
         
         body {
-            background: linear-gradient(-45deg, #081428, #0a1a35, #0c3b85, #152642);
-            background-size: 400% 400%;
+            background: var(--bg-color);
             min-height: 100vh;
             padding: 20px;
             position: relative;
-            animation: gradientBG 15s ease infinite;
             overflow-x: hidden;
-            color: var(--text-light);
+            color: var(--text-color);
         }
         
         .container {
@@ -65,14 +91,34 @@
             margin-bottom: 5px;
         }
         
+        .theme-switcher {
+            background: var(--card-bg-color);
+            border: 1px solid var(--card-border-color);
+            border-radius: 50px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-color);
+        }
+        
+        .theme-switcher i {
+            font-size: 1.2rem;
+            padding: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+        
         .user-info {
             display: flex;
             align-items: center;
             gap: 10px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(136, 136, 136, 0.1);
             padding: 10px 15px;
             border-radius: 12px;
-            border: 1px solid var(--card-border);
+            border: 1px solid var(--card-border-color);
+            width: 100%;
         }
         
         .user-info i {
@@ -81,19 +127,13 @@
         }
         
         .card {
-            background: var(--card-bg);
+            background: var(--card-bg-color);
             border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow-color);
             overflow: hidden;
             margin-bottom: 25px;
-            border: 1px solid var(--card-border);
+            border: 1px solid var(--card-border-color);
             animation: fadeIn 0.8s ease-out;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
         }
         
         .card-header {
@@ -118,24 +158,23 @@
         }
         
         .stat-card {
-            background: var(--card-bg);
+            background: var(--card-bg-color);
             border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--shadow-color);
             padding: 25px 20px;
             text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
             animation: fadeIn 1s ease-out;
-            border: 1px solid var(--card-border);
+            border: 1px solid var(--card-border-color);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100%;
+            transition: transform 0.3s ease;
         }
         
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
         }
         
         .stat-icon {
@@ -148,18 +187,19 @@
             margin-bottom: 15px;
             font-size: 1.8rem;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
         }
         
         .stat-number {
             font-size: 2.5rem;
             font-weight: 700;
-            color: var(--text-light);
+            color: var(--text-color);
             display: block;
             margin-bottom: 8px;
         }
         
         .stat-label {
-            color: var(--text-muted);
+            color: var(--text-muted-color);
             font-size: 1rem;
             font-weight: 500;
         }
@@ -171,7 +211,7 @@
             margin: 30px 0 20px;
             font-size: 1.8rem;
             font-weight: 600;
-            color: var(--text-light);
+            color: var(--text-color);
         }
         
         #attendanceContainer {
@@ -180,7 +220,7 @@
         }
         
         .loading {
-            border: 4px solid rgba(255, 255, 255, 0.1);
+            border: 4px solid rgba(136, 136, 136, 0.1);
             border-top: 4px solid var(--secondary);
             border-radius: 50%;
             width: 40px;
@@ -190,20 +230,19 @@
         }
         
         .subject-card {
-            background: var(--card-bg);
+            background: var(--card-bg-color);
             border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--shadow-color);
             padding: 20px;
             margin-bottom: 20px;
             animation: fadeIn 1s ease-out;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid var(--card-border);
+            border: 1px solid var(--card-border-color);
             overflow: hidden;
+            transition: transform 0.3s ease;
         }
         
         .subject-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
         }
         
         .subject-card.success {
@@ -221,10 +260,10 @@
         .subject-title {
             font-size: 1.3rem;
             font-weight: 600;
-            color: var(--text-light);
+            color: var(--text-color);
             margin-bottom: 15px;
             padding-bottom: 12px;
-            border-bottom: 1px solid var(--card-border);
+            border-bottom: 1px solid var(--card-border-color);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -265,7 +304,7 @@
         }
         
         .attendance-details {
-            color: var(--text-muted);
+            color: var(--text-muted-color);
             font-size: 0.95rem;
             margin-top: 5px;
         }
@@ -274,10 +313,10 @@
             text-align: center;
             padding: 12px 18px;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(136, 136, 136, 0.05);
             flex: 0 0 auto;
             min-width: 120px;
-            border: 1px solid var(--card-border);
+            border: 1px solid var(--card-border-color);
         }
         
         .status-number {
@@ -310,13 +349,13 @@
         
         .subject-footer {
             font-size: 0.9rem;
-            color: var(--text-muted);
+            color: var(--text-muted-color);
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 12px;
             padding-top: 15px;
             margin-top: 15px;
-            border-top: 1px solid var(--card-border);
+            border-top: 1px solid var(--card-border-color);
         }
         
         .subject-footer div {
@@ -361,10 +400,6 @@
             transform: translateY(0);
         }
         
-        .text-center {
-            text-align: center;
-        }
-        
         .alert-danger {
             background-color: rgba(248, 113, 113, 0.15);
             color: var(--danger);
@@ -381,8 +416,8 @@
             text-align: center;
             margin-top: 3rem;
             padding: 2rem 0;
-            border-top: 1px solid var(--card-border);
-            color: var(--text-muted);
+            border-top: 1px solid var(--card-border-color);
+            color: var(--text-muted-color);
             font-size: 0.95rem;
             display: flex;
             flex-direction: column;
@@ -414,7 +449,7 @@
         
         .floating-icon {
             position: absolute;
-            color: rgba(255, 255, 255, 0.08);
+            color: var(--floating-icon-color);
             font-size: 24px;
             animation: float 6s infinite;
         }
@@ -423,9 +458,22 @@
             display: none;
             background: none;
             border: none;
-            color: var(--text-light);
+            color: var(--text-color);
             font-size: 1.5rem;
             cursor: pointer;
+        }
+
+        .password-save {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            color: var(--text-muted-color);
+            font-size: 0.9rem;
+        }
+
+        .password-save input {
+            width: auto;
         }
         
         /* Animations */
@@ -440,21 +488,10 @@
             30%, 60%, 90% { transform: translateX(8px); }
         }
         
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
-        }
-        
-        @keyframes shine {
-            0% { transform: translateX(-100%) rotate(30deg); }
-            100% { transform: translateX(100%) rotate(30deg); }
         }
         
         @keyframes float {
@@ -591,7 +628,7 @@
         }
     </style>
 </head>
-<body>
+<body data-theme="dark">
     <!-- Floating background icons -->
     <div class="floating-icons">
         <div class="floating-icon" style="top: 10%; left: 10%;"><i class="fas fa-book"></i></div>
@@ -611,9 +648,9 @@
                     <span>Welcome, {{ rollno }} | PSG College of Technology</span>
                 </div>
             </div>
-            <button class="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
-            </button>
+            <div class="theme-switcher" id="themeSwitcher">
+                <i class="fas fa-moon"></i>
+            </div>
         </header>
 
         <!-- CGPA Section -->
@@ -654,7 +691,7 @@
         
         <div id="attendanceContainer">
             <div class="loading"></div>
-            <p style="color: var(--text-muted); text-align: center; margin-top: 15px;">Loading attendance data...</p>
+            <p style="color: var(--text-muted-color); text-align: center; margin-top: 15px;">Loading attendance data...</p>
         </div>
 
         <!-- Share Section -->
@@ -674,6 +711,32 @@
     </div>
 
     <script>
+        // Theme switching functionality
+        const themeSwitcher = document.getElementById('themeSwitcher');
+        const themeIcon = themeSwitcher.querySelector('i');
+        
+        // Check for saved theme preference or use OS preference
+        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.body.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        themeSwitcher.addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+            }
+        }
+
         // Load attendance data
         fetch('/attendance')
             .then(response => response.json())
@@ -776,12 +839,10 @@
         document.querySelectorAll('.stat-card, .subject-card').forEach(card => {
             card.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-5px)';
-                this.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.25)';
             });
             
             card.addEventListener('mouseleave', function() {
                 this.style.transform = 'translateY(0)';
-                this.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.15)';
             });
         });
     </script>
