@@ -80,11 +80,11 @@ def login():
 
     # More flexible roll number validation (PSG format: YYDepartmentNumber)
     # Examples: 21IT066, 20MEC123, 19ADM01, etc.
-    if not re.match(r'^\d{2}[A-Za-z]{2,4}\d{1,4}$', rollno):
+    if not re.match(r'^\d{2}[A-Za-z]{1,4}\d{1,4}$', rollno):
         if request.is_json:
-            return jsonify({"ok": False, "message": "Invalid roll number format. Expected format: YYDepartmentNumber (e.g., 21IT066)"}), 400
+            return jsonify({"ok": False, "message": "Invalid roll number format."}), 400
         else:
-            return render_template("index.html", error="Invalid roll number format. Expected format: YYDepartmentNumber (e.g., 21IT066)"), 400
+            return render_template("index.html", error="Invalid roll number format."), 400
 
     try:
         result = return_attendance(rollno, password)
@@ -240,4 +240,5 @@ if __name__ == '__main__':
     # Use environment variable for debug mode
     debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     app.run(debug=debug_mode, host='0.0.0.0', port=5000)
+
 
