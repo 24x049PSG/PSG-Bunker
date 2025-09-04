@@ -1,10 +1,5 @@
 PSG Bunker - Attendance & CGPA Tracker
 
-https://img.shields.io/badge/PSG-Bunker-blue?style=for-the-badge&logo=bookstack
-
-https://img.shields.io/badge/Python-3.8%252B-blue?style=for-the-badge&logo=python
-
-https://img.shields.io/badge/Flask-2.0%252B-green?style=for-the-badge&logo=flask
 
 A modern web application for PSG College of Technology students to track their attendance and CGPA with a beautiful, responsive interface.
 
