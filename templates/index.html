@@ -6,6 +6,54 @@
     <title>PSG Bunker - Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-dark: #0a1a35;
+            --primary: #0c3b85;
+            --primary-light: #1e6cc7;
+            --secondary: #4a9eff;
+            --text-light: #e0e0e0;
+            --text-dark: #333;
+            --text-muted: #a0aec0;
+            --card-bg: #152642;
+            --card-bg-light: #ffffff;
+            --card-border: #2d4a7a;
+            --card-border-light: #e2e8f0;
+            --background-dark: #081428;
+            --background-light: #f8fafc;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --hover-effect: brightness(1.2);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] {
+            --bg-color: var(--background-light);
+            --text-color: var(--text-dark);
+            --card-bg-color: var(--card-bg-light);
+            --card-border-color: var(--card-border-light);
+            --text-muted-color: #718096;
+            --shadow-color: var(--shadow-light);
+            --floating-icon-color: rgba(0, 0, 0, 0.1);
+            --input-bg: #ffffff;
+            --input-border: #ddd;
+            --input-text: #333;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: var(--background-dark);
+            --text-color: var(--text-light);
+            --card-bg-color: var(--card-bg);
+            --card-border-color: var(--card-border);
+            --text-muted-color: var(--text-muted);
+            --shadow-color: var(--shadow);
+            --floating-icon-color: rgba(255, 255, 255, 0.08);
+            --input-bg: #1e293b;
+            --input-border: #2d4a7a;
+            --input-text: #e0e0e0;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -15,19 +63,19 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
         
         body {
-            background: linear-gradient(-45deg, #0c3b85, #1e6cc7, #0c3b85, #1e6cc7);
-            background-size: 400% 400%;
+            background: var(--bg-color);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
             position: relative;
-            animation: gradientBG 15s ease infinite;
             overflow: hidden;
+            color: var(--text-color);
         }
         
         .container {
@@ -38,13 +86,37 @@
         }
         
         .login-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--card-bg-color);
             border-radius: 15px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow-color);
             overflow: hidden;
             padding: 35px 30px;
             animation: fadeIn 0.8s ease-out;
             position: relative;
+            border: 1px solid var(--card-border-color);
+        }
+        
+        .theme-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg-color);
+            border: 1px solid var(--card-border-color);
+            border-radius: 50px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-color);
+            z-index: 10;
+        }
+        
+        .theme-switcher i {
+            font-size: 1.2rem;
+            padding: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
         }
         
         .login-header {
@@ -53,7 +125,7 @@
         }
         
         .logo {
-            background: linear-gradient(135deg, #0c3b85 0%, #1e6cc7 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: white;
             width: 80px;
             height: 80px;
@@ -68,14 +140,14 @@
         }
         
         .login-header h1 {
-            color: #0c3b85;
+            color: var(--primary);
             font-size: 28px;
             margin-bottom: 8px;
             font-weight: 700;
         }
         
         .login-header p {
-            color: #666;
+            color: var(--text-muted-color);
             font-size: 16px;
         }
         
@@ -87,7 +159,7 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #444;
+            color: var(--text-color);
             font-weight: 500;
             font-size: 15px;
         }
@@ -95,7 +167,7 @@
         .form-group input {
             width: 100%;
             padding: 15px 15px 15px 45px;
-            border: 2px solid #ddd;
+            border: 2px solid var(--input-border);
             border-radius: 10px;
             font-size: 16px;
             transition: all 0.3s;
@@ -104,10 +176,12 @@
             -moz-user-select: text;
             -ms-user-select: text;
             user-select: text;
+            background: var(--input-bg);
+            color: var(--input-text);
         }
         
         .form-group input:focus {
-            border-color: #1e6cc7;
+            border-color: var(--primary-light);
             box-shadow: 0 0 0 3px rgba(30, 108, 199, 0.2);
         }
         
@@ -115,14 +189,27 @@
             position: absolute;
             left: 15px;
             top: 42px;
-            color: #777;
+            color: var(--text-muted-color);
             font-size: 18px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            color: var(--text-muted-color);
+            font-size: 14px;
+        }
+        
+        .remember-me input {
+            width: auto;
         }
         
         button {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, #0c3b85 0%, #1e6cc7 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: white;
             border: none;
             border-radius: 10px;
@@ -157,22 +244,23 @@
         }
         
         .alert-danger {
-            background-color: #ffebee;
-            color: #c62828;
+            background-color: rgba(248, 113, 113, 0.15);
+            color: var(--danger);
             padding: 12px 15px;
             border-radius: 8px;
             margin-bottom: 20px;
-            border-left: 4px solid #c62828;
+            border-left: 4px solid var(--danger);
             font-size: 15px;
             animation: shake 0.5s;
+            border: 1px solid rgba(248, 113, 113, 0.3);
         }
         
         .developer-credit {
             text-align: center;
             margin-top: 2rem;
             padding: 1.5rem 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
-            color: rgba(255, 255, 255, 0.8);
+            border-top: 1px solid var(--card-border-color);
+            color: var(--text-muted-color);
             font-size: 0.95rem;
         }
         
@@ -188,9 +276,16 @@
         
         .floating-icon {
             position: absolute;
-            color: rgba(255, 255, 255, 0.15);
+            color: var(--floating-icon-color);
             font-size: 24px;
             animation: float 6s infinite;
+        }
+        
+        .security-notice {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            color: var(--text-muted-color);
         }
         
         @keyframes fadeIn {
@@ -224,14 +319,8 @@
         @keyframes float {
             0% { transform: translateY(0) rotate(0deg); }
             50% { transform: translateY(-20px) rotate(10deg); }
+            /* Changed to make it more visible in light mode */
             100% { transform: translateY(0) rotate(0deg); }
-        }
-        
-        .security-notice {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 12px;
-            color: #666;
         }
         
         @media (max-width: 480px) {
@@ -248,10 +337,15 @@
             .login-header h1 {
                 font-size: 24px;
             }
+            
+            .theme-switcher {
+                top: 15px;
+                right: 15px;
+            }
         }
     </style>
 </head>
-<body>
+<body data-theme="dark">
     <!-- Floating background icons -->
     <div class="floating-icons">
         <div class="floating-icon" style="top: 10%; left: 10%;"><i class="fas fa-book"></i></div>
@@ -264,6 +358,10 @@
     
     <div class="container">
         <div class="login-container">
+            <div class="theme-switcher" id="themeSwitcher">
+                <i class="fas fa-moon"></i>
+            </div>
+            
             <div class="login-header">
                 <div class="logo">
                     🎓
@@ -280,20 +378,25 @@
             {% endif %}
 
             <!-- Form with all required attributes -->
-            <form method="POST" action="/login">
+            <form method="POST" action="/login" id="loginForm">
                 <div class="form-group">
                     <label for="rollno">Roll Number:</label>
                     <i class="fas fa-user"></i>
-                    <input type="text" id="rollno" name="rollno" required>
+                    <input type="text" id="rollno" name="rollno" placeholder="Enter your roll number" required>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password:</label>
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
                 </div>
 
-                <button type="submit" class="w-100">
+                <div class="remember-me">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+
+                <button type="submit">
                     <i class="fas fa-sign-in-alt"></i> Login to Dashboard
                 </button>
             </form>
@@ -312,8 +415,52 @@
     </div>
 
     <script>
-        // Simple animation and interaction scripts
+        // Theme switching functionality
+        const themeSwitcher = document.getElementById('themeSwitcher');
+        const themeIcon = themeSwitcher.querySelector('i');
+        
+        // Check for saved theme preference or use OS preference
+        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.body.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        themeSwitcher.addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+            }
+        }
+
+        // Password saving functionality
         document.addEventListener('DOMContentLoaded', function() {
+            // Check if credentials were saved
+            const savedRollno = localStorage.getItem('psgRollno');
+            const savedPassword = localStorage.getItem('psgPassword');
+            const rememberMe = localStorage.getItem('psgRemember') === 'true';
+            
+            if (savedRollno && rememberMe) {
+                document.getElementById('rollno').value = savedRollno;
+            }
+            
+            if (savedPassword && rememberMe) {
+                document.getElementById('password').value = savedPassword;
+            }
+            
+            if (rememberMe) {
+                document.getElementById('remember').checked = true;
+            }
+            
+            // Simple animation and interaction scripts
             const inputs = document.querySelectorAll('input');
             inputs.forEach(input => {
                 input.addEventListener('focus', function() {
@@ -323,6 +470,26 @@
                 input.addEventListener('blur', function() {
                     this.parentElement.style.transform = 'scale(1)';
                 });
+            });
+            
+            // Form submission handling
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', function() {
+                const remember = document.getElementById('remember').checked;
+                const rollno = document.getElementById('rollno').value;
+                const password = document.getElementById('password').value;
+                
+                if (remember) {
+                    // Save credentials
+                    localStorage.setItem('psgRollno', rollno);
+                    localStorage.setItem('psgPassword', password);
+                    localStorage.setItem('psgRemember', 'true');
+                } else {
+                    // Remove saved credentials
+                    localStorage.removeItem('psgRollno');
+                    localStorage.removeItem('psgPassword');
+                    localStorage.setItem('psgRemember', 'false');
+                }
             });
         });
     </script>
