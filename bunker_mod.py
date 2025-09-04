@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 def gradeMap(grade):
     grade_map = {
         "O": 10, "A+": 9, "A": 8, "B+": 7, 
-        "B": 6, "C+": 5, "C": 4, "RA": 0, "SA": 0, "W": 0
+        "B": 6, "C": 5, "RA": 0, "SA": 0, "W": 0
     }
     return grade_map.get(grade.strip().upper(), 0)
 
