@@ -1,9 +1,10 @@
 import math
+import re
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
-import numpy as np
-import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 def gradeMap(grade):
     grade_map = {
@@ -64,6 +65,7 @@ def return_attendance(username, pwd):
         return data, session
 
     except Exception as e:
+        logger.error(f"Error in return_attendance: {str(e)}")
         return f"Error: {str(e)}"
 
 def fetch_time_table(session):
@@ -95,7 +97,7 @@ def fetch_time_table(session):
         return course_map
 
     except Exception as e:
-        print(f"Error fetching timetable: {e}")
+        logger.error(f"Error fetching timetable: {e}")
         return {}
 
 def get_course_plan(session):
@@ -142,11 +144,11 @@ def get_course_plan(session):
                     'code': code
                 }
 
-        print(f"Fetched {len(courses)} courses")
+        logger.info(f"Fetched {len(courses)} courses")
         return courses
 
     except Exception as e:
-        print(f"Error fetching course plan: {e}")
+        logger.error(f"Error fetching course plan: {e}")
         # Final fallback to timetable
         try:
             return fetch_time_table(session)
@@ -311,6 +313,7 @@ def return_cgpa(session):
         }
 
     except Exception as e:
+        logger.error(f"Error in return_cgpa: {str(e)}")
         return {"error": str(e)}
 
 def convert_semester_to_number(semester):
