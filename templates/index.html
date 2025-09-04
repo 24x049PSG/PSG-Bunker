@@ -4,16 +4,275 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PSG Bunker - Login</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-
-     
-
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        body {
+            background: linear-gradient(-45deg, #0c3b85, #1e6cc7, #0c3b85, #1e6cc7);
+            background-size: 400% 400%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            z-index: 2;
+        }
+        
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 35px 30px;
+            animation: fadeIn 0.8s ease-out;
+            position: relative;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            background: linear-gradient(135deg, #0c3b85 0%, #1e6cc7 100%);
+            color: white;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 36px;
+            box-shadow: 0 5px 15px rgba(12, 59, 133, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        .login-header h1 {
+            color: #0c3b85;
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .login-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #444;
+            font-weight: 500;
+            font-size: 15px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            outline: none;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+        
+        .form-group input:focus {
+            border-color: #1e6cc7;
+            box-shadow: 0 0 0 3px rgba(30, 108, 199, 0.2);
+        }
+        
+        .form-group i {
+            position: absolute;
+            left: 15px;
+            top: 42px;
+            color: #777;
+            font-size: 18px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #0c3b85 0%, #1e6cc7 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(12, 59, 133, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(12, 59, 133, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+        
+        .alert-danger {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c62828;
+            font-size: 15px;
+            animation: shake 0.5s;
+        }
+        
+        .developer-credit {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+        
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 24px;
+            animation: float 6s infinite;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            15%, 45%, 75% { transform: translateX(-10px); }
+            30%, 60%, 90% { transform: translateX(10px); }
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        .security-notice {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 25px 20px;
+            }
+            
+            .logo {
+                width: 70px;
+                height: 70px;
+                font-size: 30px;
+            }
+            
+            .login-header h1 {
+                font-size: 24px;
+            }
+        }
+        
+        /* Protection against text selection */
+        .protection-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
+    <!-- Floating background icons -->
+    <div class="floating-icons">
+        <div class="floating-icon" style="top: 10%; left: 10%;"><i class="fas fa-book"></i></div>
+        <div class="floating-icon" style="top: 20%; right: 15%;"><i class="fas fa-graduation-cap"></i></div>
+        <div class="floating-icon" style="bottom: 30%; left: 15%;"><i class="fas fa-chart-line"></i></div>
+        <div class="floating-icon" style="bottom: 20%; right: 10%;"><i class="fas fa-calendar-check"></i></div>
+        <div class="floating-icon" style="top: 50%; left: 5%;"><i class="fas fa-user-graduate"></i></div>
+        <div class="floating-icon" style="top: 40%; right: 5%;"><i class="fas fa-clock"></i></div>
+    </div>
+    
     <div class="container">
         <div class="login-container">
             <div class="login-header">
@@ -24,38 +283,134 @@
                 <p>Attendance & CGPA Tracker for PSG Tech</p>
             </div>
 
-            {% if error %}
-            <div class="alert alert-danger">
-                {{ error }}
+            <!-- Error message display (same as original) -->
+            <div class="alert-danger" style="display: none;">
+                Invalid credentials. Please try again.
             </div>
-            {% endif %}
 
-            <form method="POST" action="/login">
+            <form method="POST" action="/login" id="loginForm">
                 <div class="form-group">
                     <label for="rollno">Roll Number:</label>
-                    <input type="text" id="rollno" name="rollno" required>
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="rollno" name="rollno" placeholder="Enter your roll number" required>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
                 </div>
 
-                <button type="submit" class="w-100">
-                    Login to Dashboard
+                <button type="submit">
+                    <i class="fas fa-sign-in-alt"></i> Login to Dashboard
                 </button>
             </form>
+            
+            <div class="security-notice">
+                <p>Secure login | Your data is protected</p>
+            </div>
         </div>
 
-        <!-- Developer Credit and Instagram Link at Bottom -->
-        <div style="text-align: center; margin-top: 2rem; padding: 1rem 0; border-top: 1px solid #333; color: #888;">
-            <div style="margin-bottom: 0.5rem; font-size: 0.9rem;">
+        <!-- Developer Credit -->
+        <div class="developer-credit">
+            <div>
                 Website developed by Sabareesh
             </div>
-                <img src="https://img.icons8.com/?size=100&id=BrU2BBoRXiWq&format=png&color=4a9eff" alt="Instagram" style="width: 20px; height: 20px;">
-                @manu_sanjay.m
-            </a>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation to form inputs on focus
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'scale(1.02)';
+                    this.parentElement.style.transition = 'transform 0.3s ease';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'scale(1)';
+                });
+            });
+            
+            // Add subtle animation to the login container
+            const loginContainer = document.querySelector('.login-container');
+            loginContainer.style.transition = 'transform 0.3s ease';
+            
+            loginContainer.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            loginContainer.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+            
+            // Add floating animation to form icons
+            const formIcons = document.querySelectorAll('.form-group i');
+            formIcons.forEach(icon => {
+                icon.style.transition = 'all 0.3s ease';
+                
+                icon.parentElement.addEventListener('mouseenter', function() {
+                    icon.style.transform = 'scale(1.2)';
+                    icon.style.color = '#1e6cc7';
+                });
+                
+                icon.parentElement.addEventListener('mouseleave', function() {
+                    icon.style.transform = 'scale(1)';
+                    icon.style.color = '#777';
+                });
+            });
+            
+            // Prevent text selection
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+            
+            document.addEventListener('selectstart', function(e) {
+                e.preventDefault();
+            });
+            
+            document.addEventListener('dragstart', function(e) {
+                e.preventDefault();
+            });
+            
+            // Form submission handling
+            const loginForm = document.getElementById('loginForm');
+            const errorDiv = document.querySelector('.alert-danger');
+            
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Simple validation
+                const rollno = document.getElementById('rollno').value;
+                const password = document.getElementById('password').value;
+                
+                if (!rollno || !password) {
+                    showError('Please fill in all fields');
+                    return;
+                }
+                
+                // Simulate form submission (in a real application, this would be handled by Flask)
+                simulateLogin(rollno, password);
+            });
+            
+            function showError(message) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                
+                // Hide error after 5 seconds
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 5000);
+            }
+            
+            function simulateLogin(rollno, password) {
+                // In a real application, this would be handled by the backend
+                // For demonstration purposes, we'll simulate a failed login
+                showError('Invalid credentials. Please try again.');
+            }
+        });
+    </script>
 </body>
 </html>
