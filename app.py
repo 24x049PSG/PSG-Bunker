@@ -20,7 +20,7 @@ from collections import defaultdict
 from time import time
 login_attempts = defaultdict(list)
 
-def rate_limit(max_attempts=5, time_window=300):
+def rate_limit(max_attempts=20, time_window=300):
     """Decorator to limit login attempts"""
     def decorator(f):
         @wraps(f)
@@ -78,12 +78,13 @@ def login():
         else:
             return render_template("index.html", error="Roll number and password are required"), 400
 
-    # Validate roll number format (PSG format: YYDepartmentNumber)
-    if not re.match(r'^\d{2}[A-Za-z]{2,3}\d{2,3}$', rollno):
+    # More flexible roll number validation (PSG format: YYDepartmentNumber)
+    # Examples: 21IT066, 20MEC123, 19ADM01, etc.
+    if not re.match(r'^\d{2}[A-Za-z]{2,4}\d{1,4}$', rollno):
         if request.is_json:
-            return jsonify({"ok": False, "message": "Invalid roll number format"}), 400
+            return jsonify({"ok": False, "message": "Invalid roll number format. Expected format: YYDepartmentNumber (e.g., 21IT066)"}), 400
         else:
-            return render_template("index.html", error="Invalid roll number format"), 400
+            return render_template("index.html", error="Invalid roll number format. Expected format: YYDepartmentNumber (e.g., 21IT066)"), 400
 
     try:
         result = return_attendance(rollno, password)
@@ -239,3 +240,4 @@ if __name__ == '__main__':
     # Use environment variable for debug mode
     debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     app.run(debug=debug_mode, host='0.0.0.0', port=5000)
+
