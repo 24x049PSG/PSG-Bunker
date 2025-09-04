@@ -4,66 +4,671 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - PSG Bunker</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-    <!-- Favicon Implementation -->
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-
-    
-    
-
-
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #0a1a35;
+            --primary: #0c3b85;
+            --primary-light: #1e6cc7;
+            --secondary: #4a9eff;
+            --text-light: #e0e0e0;
+            --text-muted: #a0aec0;
+            --card-bg: #152642;
+            --card-border: #2d4a7a;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --hover-effect: brightness(1.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(-45deg, #081428, #0a1a35, #0c3b85, #152642);
+            background-size: 400% 400%;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            animation: gradientBG 15s ease infinite;
+            overflow-x: hidden;
+            color: var(--text-light);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            z-index: 2;
+            position: relative;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .header-left h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--secondary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+        }
+        
+        .user-info i {
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-bottom: 25px;
+            border: 1px solid var(--card-border);
+            animation: fadeIn 0.8s ease-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 18px 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .grid {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            padding: 25px 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 1s ease-out;
+            border: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 30px 0 20px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        
+        #attendanceContainer {
+            min-height: 200px;
+            position: relative;
+        }
+        
+        .loading {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--secondary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        .subject-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            padding: 20px;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+        }
+        
+        .subject-card.success {
+            border-left: 5px solid var(--success);
+        }
+        
+        .subject-card.danger {
+            border-left: 5px solid var(--danger);
+        }
+        
+        .subject-card.warning {
+            border-left: 5px solid var(--warning);
+        }
+        
+        .subject-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .subject-main-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .attendance-percentage {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .percentage-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .percentage-number.success {
+            color: var(--success);
+        }
+        
+        .percentage-number.warning {
+            color: var(--warning);
+        }
+        
+        .percentage-number.danger {
+            color: var(--danger);
+        }
+        
+        .attendance-details {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 5px;
+        }
+        
+        .status-display {
+            text-align: center;
+            padding: 12px 18px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            flex: 0 0 auto;
+            min-width: 120px;
+            border: 1px solid var(--card-border);
+        }
+        
+        .status-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: block;
+        }
+        
+        .status-number.status-must-attend {
+            color: var(--danger);
+        }
+        
+        .status-number.status-can-miss {
+            color: var(--success);
+        }
+        
+        .status-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+        
+        .status-label.status-must-attend {
+            color: var(--danger);
+        }
+        
+        .status-label.status-can-miss {
+            color: var(--success);
+        }
+        
+        .subject-footer {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+            padding-top: 15px;
+            margin-top: 15px;
+            border-top: 1px solid var(--card-border);
+        }
+        
+        .subject-footer div {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .subject-footer i {
+            color: var(--secondary);
+            font-size: 1rem;
+        }
+        
+        .share-section {
+            margin: 40px 0 30px;
+            text-align: center;
+        }
+        
+        .share-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(12, 59, 133, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .share-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(12, 59, 133, 0.4);
+            filter: var(--hover-effect);
+        }
+        
+        .share-btn:active {
+            transform: translateY(0);
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .alert-danger {
+            background-color: rgba(248, 113, 113, 0.15);
+            color: var(--danger);
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--danger);
+            font-size: 15px;
+            animation: shake 0.5s;
+            border: 1px solid rgba(248, 113, 113, 0.3);
+        }
+        
+        .developer-credit {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem 0;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .social-link:hover {
+            color: var(--primary-light);
+        }
+        
+        .floating-icons {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.08);
+            font-size: 24px;
+            animation: float 6s infinite;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            15%, 45%, 75% { transform: translateX(-8px); }
+            30%, 60%, 90% { transform: translateX(8px); }
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .grid-3 {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+            
+            .subject-footer {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header-left h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .stat-number {
+                font-size: 2.2rem;
+            }
+            
+            .subject-main-info {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            
+            .attendance-percentage, .status-display {
+                min-width: 100%;
+            }
+            
+            .percentage-number {
+                font-size: 2rem;
+            }
+            
+            .subject-title {
+                font-size: 1.2rem;
+            }
+            
+            .share-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                top: 20px;
+                right: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
+            .header-left h1 {
+                font-size: 1.6rem;
+            }
+            
+            .user-info {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .card-header {
+                padding: 15px 20px;
+                font-size: 1rem;
+            }
+            
+            .stat-card {
+                padding: 20px 15px;
+            }
+            
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            .subject-card {
+                padding: 15px;
+            }
+            
+            .subject-title {
+                font-size: 1.1rem;
+            }
+            
+            .percentage-number {
+                font-size: 1.8rem;
+            }
+            
+            .status-display {
+                padding: 10px 15px;
+            }
+            
+            .status-number {
+                font-size: 1.6rem;
+            }
+            
+            .developer-credit {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Floating background icons -->
+    <div class="floating-icons">
+        <div class="floating-icon" style="top: 10%; left: 10%;"><i class="fas fa-book"></i></div>
+        <div class="floating-icon" style="top: 20%; right: 15%;"><i class="fas fa-graduation-cap"></i></div>
+        <div class="floating-icon" style="bottom: 30%; left: 15%;"><i class="fas fa-chart-line"></i></div>
+        <div class="floating-icon" style="bottom: 20%; right: 10%;"><i class="fas fa-calendar-check"></i></div>
+        <div class="floating-icon" style="top: 50%; left: 5%;"><i class="fas fa-user-graduate"></i></div>
+        <div class="floating-icon" style="top: 40%; right: 5%;"><i class="fas fa-clock"></i></div>
+    </div>
+
     <div class="container">
-        <h1>📚 PSG Bunker Dashboard</h1>
+        <header>
+            <div class="header-left">
+                <h1><i class="fas fa-book-open"></i> PSG Bunker Dashboard</h1>
+                <div class="user-info">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Welcome, {{ rollno }} | PSG College of Technology</span>
+                </div>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </header>
 
-        <div class="card">
-            <div class="card-header">Welcome, {{ rollno }} | PSG College of Technology</div>
+        <!-- CGPA Section -->
+        <div class="section-title">
+            <i class="fas fa-graduation-cap"></i>
+            <span>Academic Performance</span>
         </div>
-
-        <!-- CGPA Section moved to top -->
-        <h2>🎓 Academic Performance</h2>
+        
         <div class="grid grid-3">
             <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-star"></i>
+                </div>
                 <span class="stat-number">{{ cgpa.total_cgpa or '0.0' }}</span>
                 <div class="stat-label">Total CGPA</div>
             </div>
             <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
                 <span class="stat-number">{{ cgpa.latest_sem or '-' }}</span>
                 <div class="stat-label">Latest Semester</div>
             </div>
             <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
                 <span class="stat-number">{{ cgpa.total_semesters or '0' }}</span>
                 <div class="stat-label">Semesters Completed</div>
             </div>
         </div>
 
         <!-- Subject-wise Attendance Section -->
-        <h2>📚 Subject-wise Attendance</h2>
+        <div class="section-title">
+            <i class="fas fa-calendar-check"></i>
+            <span>Subject-wise Attendance</span>
+        </div>
+        
         <div id="attendanceContainer">
             <div class="loading"></div>
-            <p>Loading attendance data...</p>
+            <p style="color: var(--text-muted); text-align: center; margin-top: 15px;">Loading attendance data...</p>
         </div>
 
         <!-- Share Section -->
-        <div class="share-section text-center">
+        <div class="share-section">
             <button class="share-btn" onclick="shareApp()">
-                📤 Share PSG Bunker
+                <i class="fas fa-share-alt"></i> Share PSG Bunker
             </button>
         </div>
 
-        <!-- Developer Credit and Instagram Link at Bottom -->
-        <div style="text-align: center; margin-top: 2rem; padding: 1rem 0; border-top: 1px solid #333; color: #888;">
-            <div style="margin-bottom: 0.5rem; font-size: 0.9rem;">
-                Website developed by Manu Sanjay Btech-IT PSG TECH
-            </div>
-            <a href="https://www.instagram.com/manu_sanjay.m" target="_blank" style="color: #4a9eff; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; justify-content: center;">
-                <img src="https://img.icons8.com/?size=100&id=BrU2BBoRXiWq&format=png&color=4a9eff" alt="Instagram" style="width: 20px; height: 20px;">
-                @manu_sanjay.m
+        <!-- Developer Credit -->
+        <div class="developer-credit">
+            <div>Website developed by Manu Sanjay Btech-IT PSG TECH</div>
+            <a href="https://www.instagram.com/manu_sanjay.m" target="_blank" class="social-link">
+                <i class="fab fa-instagram"></i> @manu_sanjay.m
             </a>
         </div>
     </div>
@@ -101,7 +706,10 @@
 
                 html += `
                     <div class="subject-card ${statusClass}">
-                        <div class="subject-title">${subject.display_name || subject.name}</div>
+                        <div class="subject-title">
+                            <i class="fas fa-book"></i>
+                            ${subject.display_name || subject.name}
+                        </div>
 
                         <div class="subject-main-info">
                             <div class="attendance-percentage">
@@ -122,8 +730,14 @@
                         </div>
 
                         <div class="subject-footer">
-                            <div><strong>Period:</strong> ${subject.attendance_from} to ${subject.attendance_to}</div>
-                            <div><strong>Total Hours:</strong> ${subject.total_hours} | <strong>Exception:</strong> ${subject.exception_hour}</div>
+                            <div>
+                                <i class="fas fa-calendar"></i>
+                                <strong>Period:</strong> ${subject.attendance_from} to ${subject.attendance_to}
+                            </div>
+                            <div>
+                                <i class="fas fa-clock"></i>
+                                <strong>Total Hours:</strong> ${subject.total_hours} | <strong>Exception:</strong> ${subject.exception_hour}
+                            </div>
                         </div>
                     </div>
                 `;
@@ -157,6 +771,19 @@
                 }
             }
         }
+        
+        // Add hover animations to cards
+        document.querySelectorAll('.stat-card, .subject-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.25)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.15)';
+            });
+        });
     </script>
 </body>
 </html>
